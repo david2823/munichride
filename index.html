@@ -668,67 +668,151 @@
     <h2 class="section-title">Book your ride.</h2>
     <p class="section-sub">Fill out the form below and we'll confirm your booking within 2 hours via email or WhatsApp.</p>
 
-    <div class="booking-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" placeholder="Thomas">
+    <!-- SUCCESS MESSAGE (hidden by default) -->
+    <div id="form-success" style="display:none; background:#d1fae5; border:1.5px solid #34d399; border-radius:10px; padding:32px; margin-top:48px; text-align:center;">
+      <div style="font-size:40px; margin-bottom:12px;">✅</div>
+      <h3 style="font-family:'DM Serif Display',serif; font-size:24px; margin-bottom:8px;">Booking request received!</h3>
+      <p style="color:#065f46; font-size:15px;">You'll hear back within 2 hours via email or WhatsApp. Check your spam folder if needed.</p>
+      <a id="wa-confirm-link" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;background:#25D366;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;font-size:14px;">
+        💬 Also send via WhatsApp
+      </a>
+    </div>
+
+    <div class="booking-form" id="booking-form-wrap">
+      <!-- ACTION points to Formspree — replace YOUR_FORM_ID after setup (see note below) -->
+      <form
+        id="booking-form"
+        action="https://formspree.io/f/mzdkwzrl"
+        method="POST"
+        onsubmit="handleSubmit(event)"
+      >
+        <!-- Hidden field so Formspree sends reply-to correctly -->
+        <input type="hidden" name="_subject" value="🛵 New MunichRide Booking Request">
+        <input type="hidden" name="_replyto" id="hidden-email">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" name="first_name" id="f-firstname" placeholder="Thomas" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" name="last_name" id="f-lastname" placeholder="Müller" required>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" placeholder="Müller">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" name="email" id="f-email" placeholder="you@email.com" required oninput="document.getElementById('hidden-email').value=this.value">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp / Phone *</label>
+            <input type="tel" name="phone" id="f-phone" placeholder="+49 ..." required>
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="you@email.com">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Rental Type *</label>
+            <select name="rental_type" id="f-type" required>
+              <option value="Half Day (€35)">Half Day (€35)</option>
+              <option value="Full Day (€55)" selected>Full Day (€55)</option>
+              <option value="3 Days (€140)">3 Days (€140)</option>
+              <option value="Full Week (€280)">Full Week (€280)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Start Date *</label>
+            <input type="date" name="start_date" id="f-date" required>
+          </div>
         </div>
-        <div class="form-group">
-          <label>WhatsApp / Phone</label>
-          <input type="tel" placeholder="+49 ...">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pickup Location *</label>
+            <input type="text" name="pickup_location" id="f-location" placeholder="Hotel name or address" required>
+          </div>
+          <div class="form-group">
+            <label>Driving Licence Type *</label>
+            <select name="licence_type" id="f-licence" required>
+              <option value="Class B (car licence)">Class B (car licence)</option>
+              <option value="A1 / A2 (motorcycle)">A1 / A2 (motorcycle)</option>
+              <option value="Class A (full moto)">Class A (full moto)</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Rental Type</label>
-          <select>
-            <option>Half Day (€35)</option>
-            <option selected>Full Day (€55)</option>
-            <option>3 Days (€140)</option>
-            <option>Full Week (€280)</option>
-          </select>
+        <div class="form-row">
+          <div class="form-group form-full">
+            <label>Message (optional)</label>
+            <textarea name="message" id="f-message" rows="3" placeholder="Any questions, special requests, or additional info..."></textarea>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Start Date</label>
-          <input type="date">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Pickup Location</label>
-          <input type="text" placeholder="Hotel name or address">
-        </div>
-        <div class="form-group">
-          <label>Driving Licence Type</label>
-          <select>
-            <option>Class B (car licence)</option>
-            <option>A1 / A2 (motorcycle)</option>
-            <option>Class A (full moto)</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group form-full">
-          <label>Message (optional)</label>
-          <textarea rows="3" placeholder="Any questions, special requests, or your hotel address if not listed above..."></textarea>
-        </div>
-      </div>
-      <button class="form-submit">Request Booking →</button>
-      <p class="form-note">You won't be charged yet — we'll send a payment link after confirming availability. Secure payment via Stripe or PayPal.</p>
+        <button type="submit" class="form-submit" id="submit-btn">Request Booking →</button>
+        <p class="form-note">You won't be charged yet — we'll send a payment link after confirming availability. Secure payment via Stripe or PayPal.</p>
+      </form>
     </div>
   </div>
 </section>
+
+<script>
+async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  const form = document.getElementById('booking-form');
+  const data = new FormData(form);
+
+  // Build WhatsApp message
+  const firstName = document.getElementById('f-firstname').value;
+  const lastName  = document.getElementById('f-lastname').value;
+  const email     = document.getElementById('f-email').value;
+  const phone     = document.getElementById('f-phone').value;
+  const type      = document.getElementById('f-type').value;
+  const date      = document.getElementById('f-date').value;
+  const location  = document.getElementById('f-location').value;
+  const licence   = document.getElementById('f-licence').value;
+  const message   = document.getElementById('f-message').value;
+
+  const waText = encodeURIComponent(
+    `🛵 *New MunichRide Booking Request*\n\n` +
+    `👤 Name: ${firstName} ${lastName}\n` +
+    `📧 Email: ${email}\n` +
+    `📱 Phone: ${phone}\n` +
+    `📦 Rental: ${type}\n` +
+    `📅 Start date: ${date}\n` +
+    `📍 Pickup: ${location}\n` +
+    `🪪 Licence: ${licence}\n` +
+    `💬 Message: ${message || '–'}`
+  );
+
+  // Set the WA confirm link (shown after success)
+  document.getElementById('wa-confirm-link').href = `https://wa.me/4917651998980?text=${waText}`;
+
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (response.ok) {
+      // Show success, hide form
+      document.getElementById('booking-form-wrap').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    } else {
+      // Formspree not set up yet — fall back to WhatsApp directly
+      window.open(`https://wa.me/4917651998980?text=${waText}`, '_blank');
+      document.getElementById('booking-form-wrap').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+  } catch {
+    // No internet / Formspree not configured — open WhatsApp as fallback
+    window.open(`https://wa.me/4917651998980?text=${waText}`, '_blank');
+    document.getElementById('booking-form-wrap').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }
+}
+</script>
 
 <!-- FAQ -->
 <section class="faq" id="faq">
@@ -794,7 +878,7 @@
     <div class="footer-links">
       <h4>Contact</h4>
       <ul>
-        <li><a href="mailto:hello@munichride.com">hello@munichride.com</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#630b060f0f0c230e160d0a000b110a07064d000c0e"><span class="__cf_email__" data-cfemail="99f1fcf5f5f6d9f4ecf7f0faf1ebf0fdfcb7faf6f4">[email&#160;protected]</span></a></li>
         <li><a href="https://wa.me/4915112345678">WhatsApp</a></li>
         <li><a href="#">Instagram</a></li>
         <li><a href="#">Google Maps</a></li>
@@ -812,12 +896,4 @@
   </div>
   <div class="footer-bottom">
     <p>© 2025 MunichRide · Munich, Germany · All rides are subject to valid licence verification.</p>
-    <div class="footer-legal">
-      <a href="#">Impressum</a>
-      <a href="#">Datenschutz</a>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+    <di
