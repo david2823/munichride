@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MunichRide — Electric Scooter Rental Munich</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0f0e0d;
+    --white: #f8f5f0;
+    --cream: #f0ead8;
+    --accent: #d4541a;
+    --accent-dark: #a83c0f;
+    --muted: #7a7368;
+    --border: rgba(15,14,13,0.12);
+    --card-bg: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(248,245,240,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--black);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--black); }
+  .nav-cta {
+    background: var(--accent);
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 4px;
+    font-weight: 600 !important;
+    letter-spacing: 0 !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--accent-dark) !important; color: white !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--cream) 0%, var(--white) 60%);
+    z-index: 0;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(15,14,13,0.03) 60px, rgba(15,14,13,0.03) 61px),
+                      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(15,14,13,0.03) 60px, rgba(15,14,13,0.03) 61px);
+    z-index: 0;
+  }
+  .hero-content {
+    position: relative; z-index: 1;
+    max-width: 640px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(44px, 6vw, 72px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: var(--black);
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--black); color: white;
+    padding: 16px 32px; border-radius: 4px;
+    font-size: 15px; font-weight: 600;
+    text-decoration: none; letter-spacing: 0.2px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { background: #2a2825; transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--black);
+    padding: 16px 32px; border-radius: 4px;
+    font-size: 15px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.1s;
+  }
+  .btn-secondary:hover { border-color: var(--black); transform: translateY(-1px); }
+
+  .hero-visual {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 48%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1;
+  }
+  .scooter-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 32px 80px rgba(15,14,13,0.08);
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .scooter-img {
+    width: 100%; height: 200px;
+    background: linear-gradient(135deg, #f0ead8 0%, #e8dfc7 100%);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px;
+    font-size: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .scooter-img::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+    background: linear-gradient(to top, rgba(212,84,26,0.08), transparent);
+  }
+  .scooter-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; margin-bottom: 8px;
+  }
+  .scooter-specs {
+    display: flex; gap: 16px;
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .spec { display: flex; align-items: center; gap: 4px; }
+  .spec strong { color: var(--black); font-weight: 600; }
+  .rating-row {
+    display: flex; align-items: center; gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--muted);
+  }
+  .stars { color: #f59e0b; letter-spacing: 1px; }
+
+  /* TRUST STRIP */
+  .trust-strip {
+    background: var(--black);
+    color: white;
+    padding: 18px 48px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500; opacity: 0.85;
+    letter-spacing: 0.2px;
+  }
+  .trust-icon { font-size: 16px; opacity: 0.7; }
+
+  /* SECTION COMMON */
+  section { padding: 100px 48px; }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(34px, 4vw, 50px);
+    line-height: 1.1; letter-spacing: -0.8px;
+    margin-bottom: 20px;
+  }
+  .section-sub {
+    font-size: 17px; color: var(--muted); max-width: 520px; line-height: 1.7;
+  }
+
+  /* PRICING */
+  .pricing { background: var(--cream); }
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px; margin-top: 56px; max-width: 1100px;
+  }
+  .price-card {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(15,14,13,0.1); }
+  .price-card.featured {
+    border-color: var(--accent);
+    background: var(--black); color: white;
+  }
+  .price-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: white;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 4px 14px; border-radius: 100px;
+  }
+  .price-type {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .price-card.featured .price-type { color: rgba(255,255,255,0.5); }
+  .price-amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px; line-height: 1;
+    letter-spacing: -2px; margin-bottom: 6px;
+  }
+  .price-unit { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+  .price-card.featured .price-unit { color: rgba(255,255,255,0.5); }
+  .price-features { list-style: none; }
+  .price-features li {
+    font-size: 14px; padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .price-card.featured .price-features li { border-color: rgba(255,255,255,0.1); }
+  .price-features li:last-child { border: none; }
+  .check { color: var(--accent); font-weight: 700; }
+  .price-card.featured .check { color: #f97316; }
+  .price-cta {
+    display: block; text-align: center;
+    margin-top: 28px; padding: 13px;
+    border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+  .price-cta-outline {
+    border: 1.5px solid var(--border);
+    color: var(--black);
+  }
+  .price-cta-outline:hover { border-color: var(--black); }
+  .price-cta-solid {
+    background: var(--accent); color: white;
+  }
+  .price-cta-solid:hover { background: var(--accent-dark); }
+
+  /* HOW IT WORKS */
+  .steps { max-width: 1100px; margin: 0 auto; }
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0; margin-top: 64px;
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+  }
+  .step {
+    padding: 40px 32px;
+    border-right: 1px solid var(--border);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .step:last-child { border-right: none; }
+  .step:hover { background: var(--cream); }
+  .step-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px; color: var(--border);
+    line-height: 1; margin-bottom: 20px;
+  }
+  .step-icon { font-size: 28px; margin-bottom: 16px; }
+  .step h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; margin-bottom: 10px;
+  }
+  .step p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* SPECS */
+  .specs-section { background: var(--black); color: white; }
+  .specs-section .section-title { color: white; }
+  .specs-section .section-sub { color: rgba(255,255,255,0.5); }
+  .specs-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px; margin-top: 56px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px; overflow: hidden;
+    max-width: 900px;
+  }
+  .spec-item {
+    background: var(--black);
+    padding: 32px 28px;
+  }
+  .spec-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px; letter-spacing: -1px;
+    color: var(--accent); line-height: 1;
+    margin-bottom: 8px;
+  }
+  .spec-lbl { font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 500; }
+
+  /* BOOKING / CONTACT */
+  .booking { max-width: 700px; }
+  .booking-form {
+    background: white; border: 1px solid var(--border);
+    border-radius: 12px; padding: 48px;
+    margin-top: 48px;
+    box-shadow: 0 4px 24px rgba(15,14,13,0.06);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--black);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .form-full { grid-column: 1 / -1; }
+  .form-submit {
+    width: 100%; padding: 16px;
+    background: var(--accent); color: white;
+    border: none; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.3px;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .form-submit:hover { background: var(--accent-dark); }
+  .form-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; }
+
+  /* FAQ */
+  .faq { background: var(--cream); }
+  .faq-grid { max-width: 760px; margin-top: 56px; }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+  }
+  .faq-q {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; margin-bottom: 12px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .faq-a { font-size: 15px; color: var(--muted); line-height: 1.7; }
+
+  /* FOOTER */
+  footer {
+    background: var(--black); color: white;
+    padding: 56px 48px 36px;
+  }
+  .footer-top {
+    display: flex; justify-content: space-between; flex-wrap: wrap;
+    gap: 40px; margin-bottom: 48px;
+  }
+  .footer-brand { max-width: 280px; }
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px; margin-bottom: 14px;
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.7; }
+  .footer-links h4 {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    margin-bottom: 16px;
+  }
+  .footer-links ul { list-style: none; }
+  .footer-links li { margin-bottom: 10px; }
+  .footer-links a {
+    font-size: 14px; color: rgba(255,255,255,0.6);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: white; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 28px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.3); }
+  .footer-legal { display: flex; gap: 24px; }
+  .footer-legal a { font-size: 13px; color: rgba(255,255,255,0.3); text-decoration: none; }
+  .footer-legal a:hover { color: rgba(255,255,255,0.6); }
+
+  /* DEPOSIT BADGE */
+  .deposit-note {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(212,84,26,0.08);
+    border: 1px solid rgba(212,84,26,0.2);
+    color: var(--accent);
+    padding: 8px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 500;
+    margin-top: 20px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 72px 24px; }
+    .hero { padding: 100px 24px 60px; min-height: auto; }
+    .hero-visual { display: none; }
+    .trust-strip { padding: 16px 24px; gap: 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    footer { padding: 48px 24px 28px; }
+    .booking-form { padding: 32px 24px; }
+    .footer-top { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Munich<span>Ride</span></a>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#scooter">The Scooter</a>
+    <a href="#faq">FAQ</a>
+    <a href="#book" class="nav-cta">Book Now</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Munich · Electric · Zero Emissions</div>
+    <h1>Explore Munich<br>on <em>your terms.</em></h1>
+    <p>Rent a premium electric scooter for a day, a weekend, or a week. No app. No docking station. Just freedom — charged up and waiting for you.</p>
+    <div class="hero-actions">
+      <a href="#book" class="btn-primary">Book Your Ride →</a>
+      <a href="#pricing" class="btn-secondary">See Pricing</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="scooter-card">
+      <div class="scooter-img">🛵</div>
+      <div class="scooter-name">Horwin EK3 Long Range</div>
+      <div class="scooter-specs">
+        <div class="spec"><strong>95</strong> km/h</div>
+        <div class="spec"><strong>80–120</strong> km range</div>
+        <div class="spec"><strong>125cc</strong> class</div>
+      </div>
+      <div class="rating-row">
+        <span class="stars">★★★★★</span>
+        <span>Top-rated • Quiet • Zero emissions</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-item"><span class="trust-icon">✓</span> Helmet included</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> Full battery on pickup</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> 24h support</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> Insured vehicle</div>
+  <div class="trust-item"><span class="trust-icon">✓</span> No hidden fees</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="steps">
+    <div class="section-label">The Process</div>
+    <h2 class="section-title">Up and riding in<br>three steps.</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">📅</div>
+        <h3>Book online</h3>
+        <p>Fill out the booking form, pay securely by card or PayPal. Instant confirmation via email.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤝</div>
+        <h3>Meet &amp; Greet</h3>
+        <p>We meet you at your hotel or a central Munich location. Quick ID + licence check. You're off.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🗺️</div>
+        <h3>Ride free</h3>
+        <p>Explore at your own pace. Return the scooter at the agreed time. Deposit refunded same day.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-icon">🔋</div>
+        <h3>Easy charging</h3>
+        <p>Removable battery charges from any standard socket. Fully recharge overnight at your hotel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Transparent Pricing</div>
+  <h2 class="section-title">Simple, fair rates.</h2>
+  <p class="section-sub">All prices include a helmet, gloves, and a full battery. Rates drop with longer bookings.</p>
+  <div class="deposit-note">💳 Refundable security deposit: €200 (returned same day on clean return)</div>
+
+  <div class="pricing-grid">
+    <!-- Half day -->
+    <div class="price-card">
+      <div class="price-type">Half Day</div>
+      <div class="price-amount">€35</div>
+      <div class="price-unit">up to 5 hours</div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> 1 helmet included</li>
+        <li><span class="check">✓</span> Full battery</li>
+        <li><span class="check">✓</span> Central Munich pickup</li>
+        <li><span class="check">✓</span> Gloves included</li>
+        <li><span class="check">✓</span> Route suggestions</li>
+      </ul>
+      <a href="#book" class="price-cta price-cta-outline">Book Half Day</a>
+    </div>
+
+    <!-- Full day -->
+    <div class="price-card featured">
+      <div class="price-badge">Most Popular</div>
+      <div class="price-type">Full Day</div>
+      <div class="price-amount">€55</div>
+      <div class="price-unit">24 hours</div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> 2 helmets included</li>
+        <li><span class="check">✓</span> Full battery</li>
+        <li><span class="check">✓</span> Hotel pickup/dropoff</li>
+        <li><span class="check">✓</span> Gloves included</li>
+        <li><span class="check">✓</span> Route map &amp; tips</li>
+      </ul>
+      <a href="#book" class="price-cta price-cta-solid">Book Full Day</a>
+    </div>
+
+    <!-- 3 days -->
+    <div class="price-card">
+      <div class="price-type">3 Days</div>
+      <div class="price-amount">€140</div>
+      <div class="price-unit">72 hours · save €25</div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> 2 helmets included</li>
+        <li><span class="check">✓</span> Hotel pickup/dropoff</li>
+        <li><span class="check">✓</span> Gloves &amp; lock included</li>
+        <li><span class="check">✓</span> Priority WhatsApp support</li>
+        <li><span class="check">✓</span> Day trip recommendations</li>
+      </ul>
+      <a href="#book" class="price-cta price-cta-outline">Book 3 Days</a>
+    </div>
+
+    <!-- Full week -->
+    <div class="price-card">
+      <div class="price-type">Full Week</div>
+      <div class="price-amount">€280</div>
+      <div class="price-unit">7 days · best value</div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> 2 helmets included</li>
+        <li><span class="check">✓</span> Hotel pickup/dropoff</li>
+        <li><span class="check">✓</span> Gloves, lock &amp; rain covers</li>
+        <li><span class="check">✓</span> Dedicated WhatsApp line</li>
+        <li><span class="check">✓</span> Full Bavaria route guide</li>
+      </ul>
+      <a href="#book" class="price-cta price-cta-outline">Book Week</a>
+    </div>
+  </div>
+</section>
+
+<!-- SCOOTER SPECS -->
+<section class="specs-section" id="scooter">
+  <div class="section-label" style="color: rgba(255,255,255,0.4)">The Vehicle</div>
+  <h2 class="section-title">Horwin EK3 Long Range.</h2>
+  <p class="section-sub">Not a toy. A real road-legal electric scooter built for European riders — with the range to leave the city behind.</p>
+  <div class="specs-grid">
+    <div class="spec-item">
+      <div class="spec-val">95</div>
+      <div class="spec-lbl">km/h top speed</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-val">80+</div>
+      <div class="spec-lbl">km per charge</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-val">6.2</div>
+      <div class="spec-lbl">kW motor power</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-val">125</div>
+      <div class="spec-lbl">cc licence class</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-val">5h</div>
+      <div class="spec-lbl">full recharge time</div>
+    </div>
+  </div>
+  <p style="font-size:14px;color:rgba(255,255,255,0.35);margin-top:28px;">Requires car licence (Class B) or motorcycle licence (A1/A). Renters must be 18+.</p>
+</section>
+
+<!-- BOOKING -->
+<section id="book">
+  <div class="booking">
+    <div class="section-label">Reserve Your Scooter</div>
+    <h2 class="section-title">Book your ride.</h2>
+    <p class="section-sub">Fill out the form below and we'll confirm your booking within 2 hours via email or WhatsApp.</p>
+
+    <div class="booking-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Thomas">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Müller">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" placeholder="you@email.com">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp / Phone</label>
+          <input type="tel" placeholder="+49 ...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rental Type</label>
+          <select>
+            <option>Half Day (€35)</option>
+            <option selected>Full Day (€55)</option>
+            <option>3 Days (€140)</option>
+            <option>Full Week (€280)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Pickup Location</label>
+          <input type="text" placeholder="Hotel name or address">
+        </div>
+        <div class="form-group">
+          <label>Driving Licence Type</label>
+          <select>
+            <option>Class B (car licence)</option>
+            <option>A1 / A2 (motorcycle)</option>
+            <option>Class A (full moto)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-full">
+          <label>Message (optional)</label>
+          <textarea rows="3" placeholder="Any questions, special requests, or your hotel address if not listed above..."></textarea>
+        </div>
+      </div>
+      <button class="form-submit">Request Booking →</button>
+      <p class="form-note">You won't be charged yet — we'll send a payment link after confirming availability. Secure payment via Stripe or PayPal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-label">FAQ</div>
+  <h2 class="section-title">Common questions.</h2>
+  <div class="faq-grid">
+
+    <div class="faq-item">
+      <div class="faq-q">What licence do I need? <span>+</span></div>
+      <div class="faq-a">The Horwin EK3 is classified as a 125cc-class vehicle. You need either a full car licence (Class B, held for 1+ year) or a motorcycle licence (A1, A2, or A). We check your licence at pickup — no licence, no ride.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How does charging work? <span>+</span></div>
+      <div class="faq-a">The battery is fully removable and weighs about 15 kg. You can carry it to your hotel room and charge it from any standard 230V socket overnight. One charge takes roughly 5 hours and gives you 80+ km of range.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Where do I pick up the scooter? <span>+</span></div>
+      <div class="faq-a">We bring the scooter to you — your hotel, Airbnb, or a central Munich meeting point. We walk you through the controls and you're off. No depot, no queues.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is it insured? <span>+</span></div>
+      <div class="faq-a">Yes. The vehicle is covered by liability insurance (Kfz-Haftpflicht) as required by German law. Your €200 security deposit covers minor damage. We strongly recommend you have personal travel insurance for your trip.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I take it outside Munich? <span>+</span></div>
+      <div class="faq-a">Absolutely — that's half the fun. The EK3 is fully road-legal on German roads. Popular day trips include Starnberger See, Chiemsee, and Neuschwanstein. Just stay within Germany for the rental period.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I pay? <span>+</span></div>
+      <div class="faq-a">After we confirm your booking, we send a Stripe payment link by email. You pay by card or PayPal. The €200 deposit is collected at pickup (cash or card) and returned immediately on clean return of the scooter.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What if something goes wrong? <span>+</span></div>
+      <div class="faq-a">We're available by WhatsApp 24/7 during your rental. For mechanical issues, we'll come to you. If the scooter cannot be fixed quickly, you'll receive a pro-rated refund for unused days.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">Munich<span>Ride</span></div>
+      <p>Premium electric scooter rental in Munich. Serving tourists and visitors since 2025. English-speaking. Zero emissions.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="#how-it-works">How it works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#scooter">The Scooter</a></li>
+        <li><a href="#book">Book Now</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:hello@munichride.com">hello@munichride.com</a></li>
+        <li><a href="https://wa.me/4915112345678">WhatsApp</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Google Maps</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Impressum</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms & Conditions</a></li>
+        <li><a href="#">Rental Agreement</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 MunichRide · Munich, Germany · All rides are subject to valid licence verification.</p>
+    <div class="footer-legal">
+      <a href="#">Impressum</a>
+      <a href="#">Datenschutz</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
